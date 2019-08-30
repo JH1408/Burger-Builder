@@ -1,4 +1,3 @@
-//jshint esversion:6
 import axios from 'axios';
 
 const instance = axios.create({
