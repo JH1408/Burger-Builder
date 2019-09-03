@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {Redirect} from 'react-router-dom';
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
 import classes from './Auth.module.css';
@@ -41,6 +42,12 @@ class Auth extends Component {
       },
     },
       isSignUp: true
+  }
+
+  componentDidMount () {
+    if(!this.props.buildingBurger && this.props.authRedirectPath !== '/') {
+      this.props.onSetAuthRedirectPath();
+    }
   }
 
   checkValidity (value, rules) {
@@ -117,17 +124,24 @@ class Auth extends Component {
 
     String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
-  }
+    }
+
     let errorMessage = null;
     if (this.props.error) {
-      const error = (this.props.error.message).toLowerCase().capitalize().replace(/[_-]/g, " "); 
+      const error = (this.props.error.message).toLowerCase().capitalize().replace(/[_-]/g, " ");
       errorMessage = (
         <p>{error}</p>
       )
     }
 
+    let authRedirect = null;
+    if (this.props.isAuthenticated) {
+      authRedirect = <Redirect to={this.props.authRedirectPath}/>
+    }
+
     return (
       <div className={classes.Auth}>
+        {authRedirect}
         <h1>{this.state.isSignUp ? 'Sign Up' : 'Sign In'}</h1>
         {errorMessage}
         <form onSubmit={this.submitHandler}>
@@ -144,14 +158,18 @@ class Auth extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (email, password, isSignup) => dispatch(actions.auth(email, password, isSignup))
+    onAuth: (email, password, isSignup) => dispatch(actions.auth(email, password, isSignup)),
+    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/'))
   }
 }
 
 const mapStateToProps = state => {
   return {
     loading: state.auth.loading,
-    error: state.auth.error
+    error: state.auth.error,
+    isAuthenticated: state.auth.token !== null,
+    buildingBurger: state.burgerBuilder.building,
+    authRedirectPath: state.auth.authRedirectPath
   };
 };
 
