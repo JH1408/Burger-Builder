@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Route, withRouter, Redirect} from 'react-router-dom';
+import {Route, withRouter, Redirect, Switch} from 'react-router-dom';
 import {connect} from 'react-redux';
 import asyncComponent from './hoc/asyncComponent/asyncComponent';
 import Layout from './hoc/Layout/Layout';
@@ -26,23 +26,23 @@ class App extends Component {
 
   render() {
     let routes = (
-      <React.Fragment>
-        <Route path="/" exact component={BurgerBuilder} />
+      <Switch>
         <Route path="/auth" component={asyncAuth} />
-        <Redirect to="/"/>
-      </React.Fragment>
+        <Route path="/" exact component={BurgerBuilder} />
+        <Redirect to="/" />
+      </Switch>
     );
 
-    if (this.props.isAuthenticated) {
+    if ( this.props.isAuthenticated ) {
       routes = (
-        <React.Fragment>
-          <Route path="/" exact component={BurgerBuilder} />
+        <Switch>
           <Route path="/checkout" component={asyncCheckout} />
           <Route path="/orders" component={asyncOrders} />
           <Route path="/logout" component={Logout} />
           <Route path="/auth" component={asyncAuth} />
-          <Redirect to="/"/>
-        </React.Fragment>
+          <Route path="/" exact component={BurgerBuilder} />
+          <Redirect to="/" />
+        </Switch>
       );
     }
 
