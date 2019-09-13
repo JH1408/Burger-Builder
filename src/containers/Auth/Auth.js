@@ -45,7 +45,7 @@ const Auth = props => {
   const [isSignUp, setIsSignUp] = useState(true)
 
   const {buildingBurger, authRedirectPath, onSetAuthRedirectPath} = props;
-  
+
   useEffect(() => {
     if(!buildingBurger && authRedirectPath !== '/') {
       onSetAuthRedirectPath();
@@ -97,15 +97,17 @@ const Auth = props => {
       form = <Spinner />
     }
 
-    // String.prototype.capitalize = function() {
-    // return charAt(0).toUpperCase() + slice(1);
-    // }
 
     let errorMessage = null;
     if (props.error) {
-      const error = (props.error.message).toLowerCase().capitalize().replace(/[_-]/g, " ");
+      const error = (props.error.message).toLowerCase().replace(/[_-]/g, " ");
+      let modifiedError = '';
+      const capitalize = (error) => {
+          modifiedError = error.charAt(0).toUpperCase() + error.slice(1)
+      }
+      capitalize(error)
       errorMessage = (
-        <p>{error}</p>
+        <p>{modifiedError}</p>
       )
     }
 
